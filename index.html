@@ -383,41 +383,6 @@ public class HttpUtil {
     <header>
       
         <div class="icon"></div>
-        <time datetime="2016-09-12T03:56:46.000Z"><a href="/2016/09/12/将流转化为字符串的工具类/">2016-09-12</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2016/09/12/将流转化为字符串的工具类/">将流转化为字符串的工具类</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <ul>
-<li>经常需要将流转化为字符串，比如json，在使用的时候直接调用即可</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> java.io.BufferedReader;</div><div class="line"><span class="keyword">import</span> java.io.IOException;</div><div class="line"><span class="keyword">import</span> java.io.InputStream;</div><div class="line"><span class="keyword">import</span> java.io.InputStreamReader;</div><div class="line"><span class="keyword">import</span> java.io.StringWriter;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * 用于将流转化为字符串的工具类.</div><div class="line"> */</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StreamUtil</span> </span>&#123;</div><div class="line">    <span class="comment">//将流转换成字符串</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">parseStreamUtil</span><span class="params">(InputStream in)</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">        <span class="comment">//字符流，读取流</span></div><div class="line">        BufferedReader reader = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(in));</div><div class="line">        <span class="comment">//写入流</span></div><div class="line">        StringWriter sw = <span class="keyword">new</span> StringWriter();</div><div class="line">        <span class="comment">//读写操作</span></div><div class="line">        String str=<span class="keyword">null</span>;</div><div class="line">        <span class="keyword">while</span> ((str=reader.readLine()) !=<span class="keyword">null</span>)&#123;</div><div class="line">            <span class="comment">//写入操作</span></div><div class="line">            sw.write(str);</div><div class="line">        &#125;</div><div class="line">        sw.close();</div><div class="line">        reader.close();</div><div class="line">        <span class="keyword">return</span> sw.toString();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-      
-    </div>
-    <footer>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
         <time datetime="2016-09-12T03:56:46.000Z"><a href="/2016/09/12/粗略模仿微信UI/">2016-09-12</a></time>
       
       
@@ -513,6 +478,41 @@ public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle sa
 </code></pre>  }</li>
 </ul>
 
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2016-09-12T03:56:46.000Z"><a href="/2016/09/12/将流转化为字符串的工具类/">2016-09-12</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2016/09/12/将流转化为字符串的工具类/">将流转化为字符串的工具类</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <ul>
+<li>经常需要将流转化为字符串，比如json，在使用的时候直接调用即可</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> java.io.BufferedReader;</div><div class="line"><span class="keyword">import</span> java.io.IOException;</div><div class="line"><span class="keyword">import</span> java.io.InputStream;</div><div class="line"><span class="keyword">import</span> java.io.InputStreamReader;</div><div class="line"><span class="keyword">import</span> java.io.StringWriter;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * 用于将流转化为字符串的工具类.</div><div class="line"> */</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StreamUtil</span> </span>&#123;</div><div class="line">    <span class="comment">//将流转换成字符串</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">parseStreamUtil</span><span class="params">(InputStream in)</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">        <span class="comment">//字符流，读取流</span></div><div class="line">        BufferedReader reader = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(in));</div><div class="line">        <span class="comment">//写入流</span></div><div class="line">        StringWriter sw = <span class="keyword">new</span> StringWriter();</div><div class="line">        <span class="comment">//读写操作</span></div><div class="line">        String str=<span class="keyword">null</span>;</div><div class="line">        <span class="keyword">while</span> ((str=reader.readLine()) !=<span class="keyword">null</span>)&#123;</div><div class="line">            <span class="comment">//写入操作</span></div><div class="line">            sw.write(str);</div><div class="line">        &#125;</div><div class="line">        sw.close();</div><div class="line">        reader.close();</div><div class="line">        <span class="keyword">return</span> sw.toString();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
       
     </div>
     <footer>
