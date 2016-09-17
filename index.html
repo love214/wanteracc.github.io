@@ -63,6 +63,84 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2016-09-17T02:28:25.000Z"><a href="/2016/09/17/Android不同版本获取可用内存时遇到的问题/">2016-09-17</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2016/09/17/Android不同版本获取可用内存时遇到的问题/">Android不同版本获取可用内存时遇到的问题</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>##在获取手机和内存卡可用空间的时候，需要根据不同的API Level选择不同的方法,下面是示例代码：</p>
+<pre><code>import android.app.ActivityManager;
+import android.content.Context;
+import java.io.File;
+import site.wanter.MyApplication;
+
+/**
+ * Created by Huyanglin on 2016/9/17.
+ */
+public class AppUtil {
+    /**
+     * 获取SD卡可用空间
+     */
+    public static long getAvailableSD(){
+        //API高于18时调用
+        //File path = Environment.getExternalStorageDirectory();
+        //StatFs statFs = new StatFs(path.getPath());
+        //int blockSize = statFs.getBlockSize();
+        //long totalBytes = statFs.getTotalBytes();
+        //int availableBlocks = statFs.getAvailableBlocks();
+        //return availableBlocks*blockSize;
+
+        long freeBytesExternal = new File(MyApplication.getContext().getExternalFilesDir(null).toString()).getFreeSpace();
+        return freeBytesExternal;
+    }
+
+    /**
+     * 获取手可用空间
+     * @return 可用空间
+     */
+    public static long getAvailableROM(){
+        //API高于18时候调用
+        //File path = Environment.getDataDirectory();
+        //StatFs statFs = new StatFs(path.getPath());
+        //int blockSize = statFs.getBlockSize();
+        //long totalBytes = statFs.getTotalBytes();
+        //int availableBlocks = statFs.getAvailableBlocks();
+        //return availableBlocks*blockSize;
+        ActivityManager am = (ActivityManager) MyApplication.getContext().getSystemService(Context.ACTIVITY_SERVICE);
+        ActivityManager.MemoryInfo mi = new ActivityManager.MemoryInfo();
+        am.getMemoryInfo(mi);
+        //mi.availMem; 当前系统的可用内存
+
+        return mi.availMem;
+    }
+}
+</code></pre>
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2016-09-12T03:56:46.000Z"><a href="/2016/09/12/About Me/">2016-09-12</a></time>
       
       
@@ -201,122 +279,6 @@ public class LogUtil {
     }
 }
 </code></pre>
-      
-    </div>
-    <footer>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2016-09-12T03:56:46.000Z"><a href="/2016/09/12/粗略模仿微信UI/">2016-09-12</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2016/09/12/粗略模仿微信UI/">粗略模仿微信UI</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <h1 id="项目名称：WeChatUI"><a href="#项目名称：WeChatUI" class="headerlink" title="项目名称：WeChatUI"></a>项目名称：WeChatUI</h1><h2 id="项目地址：Github"><a href="#项目地址：Github" class="headerlink" title="项目地址：Github"></a>项目地址：<a href="https://github.com/wanteracc/WeChatUI/" target="_blank" rel="external">Github</a></h2><ul>
-<li><p>粗略模仿微信UI</p>
-<h2 id="切换fragment-在运行的过程中修改显示的fragment"><a href="#切换fragment-在运行的过程中修改显示的fragment" class="headerlink" title="切换fragment,在运行的过程中修改显示的fragment"></a>切换fragment,在运行的过程中修改显示的fragment</h2><p>  public void onClick(View v) {</p>
-<pre><code>FragmentManager manager = getFragmentManager();
-FragmentTransaction transaction=manager.beginTransaction();
-switch (v.getId()) {
-    case R.id.btn_contact:
-        transaction.replace(R.id.ll, new ContactFragment());
-        break;
-
-    case R.id.btn_discover:
-        transaction.replace(R.id.ll, new DiscoverFragment());
-        break;
-
-    case R.id.btn_wx:
-        transaction.replace(R.id.ll, new WeXinFragment());
-        break;
-
-    case R.id.btn_me:
-        transaction.replace(R.id.ll, new MeFragment());
-        break;
-}
-transaction.commit();
-</code></pre><p>  }</p>
-</li>
-</ul>
-<h2 id="在HomeActivity布局文件中，定义了一个线性布局，R-id-ll，使用fragment动态替换该布局。"><a href="#在HomeActivity布局文件中，定义了一个线性布局，R-id-ll，使用fragment动态替换该布局。" class="headerlink" title="在HomeActivity布局文件中，定义了一个线性布局，R.id.ll，使用fragment动态替换该布局。"></a>在HomeActivity布局文件中，定义了一个线性布局，R.id.ll，使用fragment动态替换该布局。</h2><ul>
-<li><p>以下是HomeActivity的布局文件。</p>
-<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
-&lt;RelativeLayout
-      xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
-       android:layout_width=&quot;match_parent&quot;
-       android:layout_height=&quot;match_parent&quot;
-       &gt;
-    &lt;LinearLayout
-        android:id=&quot;@+id/ll&quot;
-        android:layout_width=&quot;match_parent&quot;
-        android:layout_height=&quot;match_parent&quot;
-        android:orientation=&quot;vertical&quot;&gt;
-    &lt;/LinearLayout&gt;
-
-    &lt;LinearLayout
-        android:layout_alignParentBottom=&quot;true&quot;
-        android:layout_width=&quot;match_parent&quot;
-        android:layout_height=&quot;wrap_content&quot;
-        android:orientation=&quot;horizontal&quot;&gt;
-        &lt;Button
-            android:id=&quot;@+id/btn_wx&quot;
-            android:layout_width=&quot;0dp&quot;
-            android:layout_height=&quot;wrap_content&quot;
-            android:layout_weight=&quot;1&quot;
-            android:text=&quot;微信&quot;/&gt;
-        &lt;Button
-            android:id=&quot;@+id/btn_contact&quot;
-            android:layout_width=&quot;0dp&quot;
-            android:layout_height=&quot;wrap_content&quot;
-            android:layout_weight=&quot;1&quot;
-            android:text=&quot;联系人&quot;/&gt;
-        &lt;Button
-            android:id=&quot;@+id/btn_discover&quot;
-            android:layout_width=&quot;0dp&quot;
-            android:layout_height=&quot;wrap_content&quot;
-            android:layout_weight=&quot;1&quot;
-            android:text=&quot;发现&quot;/&gt;
-        &lt;Button
-            android:id=&quot;@+id/btn_me&quot;
-            android:layout_width=&quot;0dp&quot;
-            android:layout_height=&quot;wrap_content&quot;
-            android:layout_weight=&quot;1&quot;
-            android:text=&quot;我&quot;/&gt;
-    &lt;/LinearLayout&gt;
-&lt;/RelativeLayout&gt;
-</code></pre></li>
-</ul>
-<h2 id="在各个fragment中动态加载布局文件"><a href="#在各个fragment中动态加载布局文件" class="headerlink" title="在各个fragment中动态加载布局文件"></a>在各个fragment中动态加载布局文件</h2><ul>
-<li>如下：</li>
-<li>  public class WeXinFragment extends Fragment {<pre><code>@Nullable
-@Override
-public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    View view = inflater.inflate(R.layout.fragment_wexin, null);
-    return view;
-}
-</code></pre>  }</li>
-</ul>
-
       
     </div>
     <footer>
@@ -528,6 +490,122 @@ public class HttpUtil {
 
 
 
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2016-09-12T03:56:46.000Z"><a href="/2016/09/12/粗略模仿微信UI/">2016-09-12</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2016/09/12/粗略模仿微信UI/">粗略模仿微信UI</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <h1 id="项目名称：WeChatUI"><a href="#项目名称：WeChatUI" class="headerlink" title="项目名称：WeChatUI"></a>项目名称：WeChatUI</h1><h2 id="项目地址：Github"><a href="#项目地址：Github" class="headerlink" title="项目地址：Github"></a>项目地址：<a href="https://github.com/wanteracc/WeChatUI/" target="_blank" rel="external">Github</a></h2><ul>
+<li><p>粗略模仿微信UI</p>
+<h2 id="切换fragment-在运行的过程中修改显示的fragment"><a href="#切换fragment-在运行的过程中修改显示的fragment" class="headerlink" title="切换fragment,在运行的过程中修改显示的fragment"></a>切换fragment,在运行的过程中修改显示的fragment</h2><p>  public void onClick(View v) {</p>
+<pre><code>FragmentManager manager = getFragmentManager();
+FragmentTransaction transaction=manager.beginTransaction();
+switch (v.getId()) {
+    case R.id.btn_contact:
+        transaction.replace(R.id.ll, new ContactFragment());
+        break;
+
+    case R.id.btn_discover:
+        transaction.replace(R.id.ll, new DiscoverFragment());
+        break;
+
+    case R.id.btn_wx:
+        transaction.replace(R.id.ll, new WeXinFragment());
+        break;
+
+    case R.id.btn_me:
+        transaction.replace(R.id.ll, new MeFragment());
+        break;
+}
+transaction.commit();
+</code></pre><p>  }</p>
+</li>
+</ul>
+<h2 id="在HomeActivity布局文件中，定义了一个线性布局，R-id-ll，使用fragment动态替换该布局。"><a href="#在HomeActivity布局文件中，定义了一个线性布局，R-id-ll，使用fragment动态替换该布局。" class="headerlink" title="在HomeActivity布局文件中，定义了一个线性布局，R.id.ll，使用fragment动态替换该布局。"></a>在HomeActivity布局文件中，定义了一个线性布局，R.id.ll，使用fragment动态替换该布局。</h2><ul>
+<li><p>以下是HomeActivity的布局文件。</p>
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;RelativeLayout
+      xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+       android:layout_width=&quot;match_parent&quot;
+       android:layout_height=&quot;match_parent&quot;
+       &gt;
+    &lt;LinearLayout
+        android:id=&quot;@+id/ll&quot;
+        android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;match_parent&quot;
+        android:orientation=&quot;vertical&quot;&gt;
+    &lt;/LinearLayout&gt;
+
+    &lt;LinearLayout
+        android:layout_alignParentBottom=&quot;true&quot;
+        android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;wrap_content&quot;
+        android:orientation=&quot;horizontal&quot;&gt;
+        &lt;Button
+            android:id=&quot;@+id/btn_wx&quot;
+            android:layout_width=&quot;0dp&quot;
+            android:layout_height=&quot;wrap_content&quot;
+            android:layout_weight=&quot;1&quot;
+            android:text=&quot;微信&quot;/&gt;
+        &lt;Button
+            android:id=&quot;@+id/btn_contact&quot;
+            android:layout_width=&quot;0dp&quot;
+            android:layout_height=&quot;wrap_content&quot;
+            android:layout_weight=&quot;1&quot;
+            android:text=&quot;联系人&quot;/&gt;
+        &lt;Button
+            android:id=&quot;@+id/btn_discover&quot;
+            android:layout_width=&quot;0dp&quot;
+            android:layout_height=&quot;wrap_content&quot;
+            android:layout_weight=&quot;1&quot;
+            android:text=&quot;发现&quot;/&gt;
+        &lt;Button
+            android:id=&quot;@+id/btn_me&quot;
+            android:layout_width=&quot;0dp&quot;
+            android:layout_height=&quot;wrap_content&quot;
+            android:layout_weight=&quot;1&quot;
+            android:text=&quot;我&quot;/&gt;
+    &lt;/LinearLayout&gt;
+&lt;/RelativeLayout&gt;
+</code></pre></li>
+</ul>
+<h2 id="在各个fragment中动态加载布局文件"><a href="#在各个fragment中动态加载布局文件" class="headerlink" title="在各个fragment中动态加载布局文件"></a>在各个fragment中动态加载布局文件</h2><ul>
+<li>如下：</li>
+<li>  public class WeXinFragment extends Fragment {<pre><code>@Nullable
+@Override
+public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    View view = inflater.inflate(R.layout.fragment_wexin, null);
+    return view;
+}
+</code></pre>  }</li>
+</ul>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
 
 <nav id="pagination">
   
@@ -549,7 +627,7 @@ public class HttpUtil {
   <h3 class="title">Tags</h3>
   <ul class="entry">
   
-    <li><a href="/tags/Android/">Android</a><small>5</small></li>
+    <li><a href="/tags/Android/">Android</a><small>6</small></li>
   
     <li><a href="/tags/Life/">Life</a><small>1</small></li>
   

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   
-  <title>《第一行代码》奇淫技巧篇 | wanter&#39;s blog</title>
+  <title>Android不同版本获取可用内存时遇到的问题 | wanter&#39;s blog</title>
   <meta name="author" content="wanter">
   
   <meta name="description" content="拥抱Github">
@@ -11,7 +11,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <meta property="og:title" content="《第一行代码》奇淫技巧篇"/>
+  <meta property="og:title" content="Android不同版本获取可用内存时遇到的问题"/>
   <meta property="og:site_name" content="wanter&#39;s blog"/>
 
   
@@ -62,98 +62,60 @@
     <header>
       
         <div class="icon"></div>
-        <time datetime="2016-09-12T03:56:46.000Z"><a href="/2016/09/12/《第一行代码》奇淫技巧篇/">2016-09-12</a></time>
+        <time datetime="2016-09-17T02:28:25.000Z"><a href="/2016/09/17/Android不同版本获取可用内存时遇到的问题/">2016-09-17</a></time>
       
       
   
-    <h1 class="title">《第一行代码》奇淫技巧篇</h1>
+    <h1 class="title">Android不同版本获取可用内存时遇到的问题</h1>
   
 
     </header>
     <div class="entry">
       
-        <h2 id="1、获取全局Context"><a href="#1、获取全局Context" class="headerlink" title="1、获取全局Context"></a>1、获取全局Context</h2><blockquote>
-<p>获取 Context 并非是那么容易的一件事，有时候还是挺伤脑筋的。不过别担心，下面我们就来学习一种技巧，让你在项目的任何地方都能够轻松获取到 Context。</p>
-</blockquote>
-<hr>
-<pre><code>Android 提供了一个 Application 类，每当应用程序启动的时候，系统就会自动将这个类进行初始化。而我们可以定制一个自己的 Application 类，以便于管理程序内一些全局的状态信息，比如说全局 Context。
-定制一个自己 Application 其实并不复杂，首先我们需要创建一个 MyApplication 类继承自 Application，代码如下所示：
-</code></pre><hr>
-<pre><code>import android.app.Application;
+        <p>##在获取手机和内存卡可用空间的时候，需要根据不同的API Level选择不同的方法,下面是示例代码：</p>
+<pre><code>import android.app.ActivityManager;
 import android.content.Context;
-
-public class MyApplication extends Application {
-    private static Context context;
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        context=getApplicationContext();
-    }
-
-    public static Context getContext(){
-        return context;
-    }
-}
-</code></pre><hr>
-<blockquote>
-<p>接下来我们需要告知系统，当程序启动的时候应该初始化 MyApplication 类，而不是默认的 Application 类。</p>
-</blockquote>
-<p>在 AndroidManifest.xml 文件的<application>标签下进行指定</application></p>
-<pre><code>&lt;manifest xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
-    package=&quot;com.example.networktest&quot;
-    android:versionCode=&quot;1&quot;
-    android:versionName=&quot;1.0&quot; &gt;
-    ……
-    &lt;application
-        android:name=&quot;com.example.networktest.MyApplication&quot;
-    …… &gt;
-    ……
-    &lt;/application&gt;
-&lt;/manifest&gt;
-</code></pre><h2 id="2、自定义日志打印控制工具"><a href="#2、自定义日志打印控制工具" class="headerlink" title="2、自定义日志打印控制工具"></a>2、自定义日志打印控制工具</h2><blockquote>
-<p>如何在应用中控制日志打印，比如说 ，开发阶段打印所有，上线了就不打印日志。需要自定义日志打印工具。</p>
-</blockquote>
-<p>代码如下：</p>
-<pre><code>import android.util.Log;
+import java.io.File;
+import site.wanter.MyApplication;
 
 /**
- * 自定义日志打印工具
- * 通过修改LEVEL控制日志打印
+ * Created by Huyanglin on 2016/9/17.
  */
-public class LogUtil {
-    public static final int VERBOSE=1;
-    public static final int DEBUG=2;
-    public static final int INFO=3;
-    public static final int WARN=4;
-    public static final int ERROR=5;
-    public static final int NOTHING=6;
-    public static final int LEVEL=VERBOSE;//通过更改LEVEL控制日志打印
+public class AppUtil {
+    /**
+     * 获取SD卡可用空间
+     */
+    public static long getAvailableSD(){
+        //API高于18时调用
+        //File path = Environment.getExternalStorageDirectory();
+        //StatFs statFs = new StatFs(path.getPath());
+        //int blockSize = statFs.getBlockSize();
+        //long totalBytes = statFs.getTotalBytes();
+        //int availableBlocks = statFs.getAvailableBlocks();
+        //return availableBlocks*blockSize;
 
-    public static  void v(String tag,String msg){
-        if (LEVEL&lt;=VERBOSE){
-            Log.v(tag,msg);
-        }
+        long freeBytesExternal = new File(MyApplication.getContext().getExternalFilesDir(null).toString()).getFreeSpace();
+        return freeBytesExternal;
     }
-    public static  void d(String tag,String msg){
-        if (LEVEL&lt;=DEBUG){
-            Log.d(tag,msg);
-        }
-    }
-    public static  void i(String tag,String msg){
-        if (LEVEL&lt;=INFO){
-            Log.i(tag,msg);
-        }
-    }
-    public static  void w(String tag,String msg){
-        if (LEVEL&lt;=WARN){
-            Log.w(tag,msg);
-        }
-    }
-    public static  void e(String tag,String msg){
-        if (LEVEL&lt;=ERROR){
-            Log.e(tag,msg);
-        }
+
+    /**
+     * 获取手可用空间
+     * @return 可用空间
+     */
+    public static long getAvailableROM(){
+        //API高于18时候调用
+        //File path = Environment.getDataDirectory();
+        //StatFs statFs = new StatFs(path.getPath());
+        //int blockSize = statFs.getBlockSize();
+        //long totalBytes = statFs.getTotalBytes();
+        //int availableBlocks = statFs.getAvailableBlocks();
+        //return availableBlocks*blockSize;
+        ActivityManager am = (ActivityManager) MyApplication.getContext().getSystemService(Context.ACTIVITY_SERVICE);
+        ActivityManager.MemoryInfo mi = new ActivityManager.MemoryInfo();
+        am.getMemoryInfo(mi);
+        //mi.availMem; 当前系统的可用内存
+
+        return mi.availMem;
     }
 }
 </code></pre>
@@ -194,7 +156,7 @@ public class LogUtil {
 <section id="comment">
   <h1 class="title">Kommentare</h1>
   <!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="2016/09/12/《第一行代码》奇淫技巧篇/" data-title="《第一行代码》奇淫技巧篇" data-url="http://wanteracc.github.io"></div>
+	<div class="ds-thread" data-thread-key="2016/09/17/Android不同版本获取可用内存时遇到的问题/" data-title="Android不同版本获取可用内存时遇到的问题" data-url="http://wanteracc.github.io"></div>
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
