@@ -110,12 +110,8 @@ public class AppUtil {
         //long totalBytes = statFs.getTotalBytes();
         //int availableBlocks = statFs.getAvailableBlocks();
         //return availableBlocks*blockSize;
-        ActivityManager am = (ActivityManager) MyApplication.getContext().getSystemService(Context.ACTIVITY_SERVICE);
-        ActivityManager.MemoryInfo mi = new ActivityManager.MemoryInfo();
-        am.getMemoryInfo(mi);
-        //mi.availMem; 当前系统的可用内存
-
-        return mi.availMem;
+        long freeBytesInternal = new File(ctx.getFilesDir().getAbsoluteFile().toString()).getFreeSpace();//内置存储
+        return freeBytesInternal;
     }
 }
 </code></pre>
@@ -154,7 +150,7 @@ public class AppUtil {
 
 
 <section id="comment">
-  <h1 class="title">Comentarios</h1>
+  <h1 class="title">Kommentare</h1>
   <!-- 多说评论框 start -->
 	<div class="ds-thread" data-thread-key="2016/09/17/Android不同版本获取可用内存时遇到的问题/" data-title="Android不同版本获取可用内存时遇到的问题" data-url="http://wanteracc.github.io"></div>
 <!-- 多说评论框 end -->
@@ -179,7 +175,7 @@ var duoshuoQuery = {short_name:"wanteracc"};
     <aside id="sidebar" class="alignright">
   <div class="search">
   <form action="//google.com/search" method="get" accept-charset="utf-8">
-    <input type="search" name="q" results="0" placeholder="Buscar">
+    <input type="search" name="q" results="0" placeholder="Suche">
     <input type="hidden" name="q" value="site:wanteracc.github.io">
   </form>
 </div>
@@ -188,7 +184,7 @@ var duoshuoQuery = {short_name:"wanteracc"};
 
   
 <div class="widget tag">
-  <h3 class="title">Etiquetas</h3>
+  <h3 class="title">Tags</h3>
   <ul class="entry">
   
     <li><a href="/tags/Android/">Android</a><small>6</small></li>

@@ -111,12 +111,8 @@ public class AppUtil {
         //long totalBytes = statFs.getTotalBytes();
         //int availableBlocks = statFs.getAvailableBlocks();
         //return availableBlocks*blockSize;
-        ActivityManager am = (ActivityManager) MyApplication.getContext().getSystemService(Context.ACTIVITY_SERVICE);
-        ActivityManager.MemoryInfo mi = new ActivityManager.MemoryInfo();
-        am.getMemoryInfo(mi);
-        //mi.availMem; 当前系统的可用内存
-
-        return mi.availMem;
+        long freeBytesInternal = new File(ctx.getFilesDir().getAbsoluteFile().toString()).getFreeSpace();//内置存储
+        return freeBytesInternal;
     }
 }
 </code></pre>
@@ -163,6 +159,248 @@ public class AppUtil {
 </li>
 </ul>
 
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2016-09-12T03:56:46.000Z"><a href="/2016/09/12/《第一行代码》奇淫技巧篇/">2016-09-12</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2016/09/12/《第一行代码》奇淫技巧篇/">《第一行代码》奇淫技巧篇</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <h2 id="1、获取全局Context"><a href="#1、获取全局Context" class="headerlink" title="1、获取全局Context"></a>1、获取全局Context</h2><blockquote>
+<p>获取 Context 并非是那么容易的一件事，有时候还是挺伤脑筋的。不过别担心，下面我们就来学习一种技巧，让你在项目的任何地方都能够轻松获取到 Context。</p>
+</blockquote>
+<hr>
+<pre><code>Android 提供了一个 Application 类，每当应用程序启动的时候，系统就会自动将这个类进行初始化。而我们可以定制一个自己的 Application 类，以便于管理程序内一些全局的状态信息，比如说全局 Context。
+定制一个自己 Application 其实并不复杂，首先我们需要创建一个 MyApplication 类继承自 Application，代码如下所示：
+</code></pre><hr>
+<pre><code>import android.app.Application;
+import android.content.Context;
+
+public class MyApplication extends Application {
+    private static Context context;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        context=getApplicationContext();
+    }
+
+    public static Context getContext(){
+        return context;
+    }
+}
+</code></pre><hr>
+<blockquote>
+<p>接下来我们需要告知系统，当程序启动的时候应该初始化 MyApplication 类，而不是默认的 Application 类。</p>
+</blockquote>
+<p>在 AndroidManifest.xml 文件的<application>标签下进行指定</application></p>
+<pre><code>&lt;manifest xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    package=&quot;com.example.networktest&quot;
+    android:versionCode=&quot;1&quot;
+    android:versionName=&quot;1.0&quot; &gt;
+    ……
+    &lt;application
+        android:name=&quot;com.example.networktest.MyApplication&quot;
+    …… &gt;
+    ……
+    &lt;/application&gt;
+&lt;/manifest&gt;
+</code></pre><h2 id="2、自定义日志打印控制工具"><a href="#2、自定义日志打印控制工具" class="headerlink" title="2、自定义日志打印控制工具"></a>2、自定义日志打印控制工具</h2><blockquote>
+<p>如何在应用中控制日志打印，比如说 ，开发阶段打印所有，上线了就不打印日志。需要自定义日志打印工具。</p>
+</blockquote>
+<p>代码如下：</p>
+<pre><code>import android.util.Log;
+
+/**
+ * 自定义日志打印工具
+ * 通过修改LEVEL控制日志打印
+ */
+public class LogUtil {
+    public static final int VERBOSE=1;
+    public static final int DEBUG=2;
+    public static final int INFO=3;
+    public static final int WARN=4;
+    public static final int ERROR=5;
+    public static final int NOTHING=6;
+    public static final int LEVEL=VERBOSE;//通过更改LEVEL控制日志打印
+
+    public static  void v(String tag,String msg){
+        if (LEVEL&lt;=VERBOSE){
+            Log.v(tag,msg);
+        }
+    }
+    public static  void d(String tag,String msg){
+        if (LEVEL&lt;=DEBUG){
+            Log.d(tag,msg);
+        }
+    }
+    public static  void i(String tag,String msg){
+        if (LEVEL&lt;=INFO){
+            Log.i(tag,msg);
+        }
+    }
+    public static  void w(String tag,String msg){
+        if (LEVEL&lt;=WARN){
+            Log.w(tag,msg);
+        }
+    }
+    public static  void e(String tag,String msg){
+        if (LEVEL&lt;=ERROR){
+            Log.e(tag,msg);
+        }
+    }
+}
+</code></pre>
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2016-09-12T03:56:46.000Z"><a href="/2016/09/12/子线程中返回数据的问题（不能使用return！！！）/">2016-09-12</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2016/09/12/子线程中返回数据的问题（不能使用return！！！）/">子线程中返回数据的问题（不能使用return！！！）</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <h1 id="读《第一行代码》笔记"><a href="#读《第一行代码》笔记" class="headerlink" title="读《第一行代码》笔记"></a>读《第一行代码》笔记</h1><h2 id="1、场景"><a href="#1、场景" class="headerlink" title="1、场景"></a>1、场景</h2><p>开启了一个子线程后，在子线程执行获取JSON的操作，在操作完成之后，通过return返回到调用它的方法，但是每次都收不到返回的是数据。</p>
+<h2 id="2、原因分析"><a href="#2、原因分析" class="headerlink" title="2、原因分析"></a>2、原因分析</h2><p>调用子线程获取网络数据的方法可能还没有获取到服务端返回的数据，而调用它的方法已经运行结束了。</p>
+<h2 id="3、解决方案-使用java的回调机制"><a href="#3、解决方案-使用java的回调机制" class="headerlink" title="3、解决方案-使用java的回调机制"></a>3、解决方案-使用java的回调机制</h2><p>示例：<br><br>不使用子线程的返回数据方法：</p>
+<pre><code>public class HttpUtil {
+    public static String sendHttpRequest(String address){
+        HttpURLConnection connection=null;
+        try{
+            URL url=new URL(address);
+            connection=(HttpURLConnection)url.openConnection();
+            connection.setRequestMethod(&quot;GET&quot;);
+            connection.setReadTimeout(8000);
+            connection.setConnectTimeout(8000);
+            connection.setDoInput(true);
+            connection.setDoOutput(true);
+            InputStream in=connection.getInputStream();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+            StringBuilder response=new StringBuilder();
+            String line=&quot;&quot;;
+            while ((line=reader.readLine())!=null){
+                response.append(line);
+            }
+            return response.toString();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            if (connection!=null){
+                connection.disconnect();
+            }
+        }
+        return null;
+    }
+}
+</code></pre><p>使用子线程的返回数据方法，加入回调</p>
+<h3 id="1-加入回调接口"><a href="#1-加入回调接口" class="headerlink" title="(1)加入回调接口"></a>(1)加入回调接口</h3><pre><code>public interface HttpCallbackListener {
+    void onFinish(String response);
+    void onError(Exception e);
+}
+</code></pre><h3 id="2-修改调用代码，加入回调方法"><a href="#2-修改调用代码，加入回调方法" class="headerlink" title="(2)修改调用代码，加入回调方法"></a>(2)修改调用代码，加入回调方法</h3><pre><code>import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+public class HttpUtil {
+    public static void sendHttpRequest(final String address,final HttpCallbackListener listener){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                HttpURLConnection connection=null;
+                try{
+                    URL url=new URL(address);
+                    connection=(HttpURLConnection)url.openConnection();
+                    connection.setRequestMethod(&quot;GET&quot;);
+                    connection.setReadTimeout(8000);
+                    connection.setConnectTimeout(8000);
+                    connection.setDoInput(true);
+                    connection.setDoOutput(true);
+                    InputStream in=connection.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+                    StringBuilder response=new StringBuilder();
+                    String line=&quot;&quot;;
+                    while ((line=reader.readLine())!=null){
+                        response.append(line);
+                    }
+                    if (listener!=null){
+                        listener.onFinish(response.toString());
+                    }
+                } catch (Exception e) {
+                    if (listener!=null){
+                        listener.onError(e);
+                    }
+                }finally {
+                    if (connection!=null){
+                        connection.disconnect();
+                    }
+                }
+            }
+        }).start();
+    }
+}
+</code></pre><h3 id="3-调用并获得返回数据"><a href="#3-调用并获得返回数据" class="headerlink" title="(3)调用并获得返回数据"></a>(3)调用并获得返回数据</h3><pre><code>public void test(){  
+      String address=&quot;http://www.google.com&quot;;
+        HttpUtil.sendHttpRequest(address, new HttpCallbackListener() {
+            @Override
+            public void onFinish(String response) {
+                //在这里根据返回内容执行具体的逻辑
+            }
+            @Override
+            public void onError(Exception e) {
+                //在这里对异常进行处理
+            }
+        });
+}
+</code></pre>
       
     </div>
     <footer>
@@ -335,248 +573,6 @@ public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle sa
     <header>
       
         <div class="icon"></div>
-        <time datetime="2016-09-12T03:56:46.000Z"><a href="/2016/09/12/子线程中返回数据的问题（不能使用return！！！）/">2016-09-12</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2016/09/12/子线程中返回数据的问题（不能使用return！！！）/">子线程中返回数据的问题（不能使用return！！！）</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <h1 id="读《第一行代码》笔记"><a href="#读《第一行代码》笔记" class="headerlink" title="读《第一行代码》笔记"></a>读《第一行代码》笔记</h1><h2 id="1、场景"><a href="#1、场景" class="headerlink" title="1、场景"></a>1、场景</h2><p>开启了一个子线程后，在子线程执行获取JSON的操作，在操作完成之后，通过return返回到调用它的方法，但是每次都收不到返回的是数据。</p>
-<h2 id="2、原因分析"><a href="#2、原因分析" class="headerlink" title="2、原因分析"></a>2、原因分析</h2><p>调用子线程获取网络数据的方法可能还没有获取到服务端返回的数据，而调用它的方法已经运行结束了。</p>
-<h2 id="3、解决方案-使用java的回调机制"><a href="#3、解决方案-使用java的回调机制" class="headerlink" title="3、解决方案-使用java的回调机制"></a>3、解决方案-使用java的回调机制</h2><p>示例：<br><br>不使用子线程的返回数据方法：</p>
-<pre><code>public class HttpUtil {
-    public static String sendHttpRequest(String address){
-        HttpURLConnection connection=null;
-        try{
-            URL url=new URL(address);
-            connection=(HttpURLConnection)url.openConnection();
-            connection.setRequestMethod(&quot;GET&quot;);
-            connection.setReadTimeout(8000);
-            connection.setConnectTimeout(8000);
-            connection.setDoInput(true);
-            connection.setDoOutput(true);
-            InputStream in=connection.getInputStream();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-            StringBuilder response=new StringBuilder();
-            String line=&quot;&quot;;
-            while ((line=reader.readLine())!=null){
-                response.append(line);
-            }
-            return response.toString();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally {
-            if (connection!=null){
-                connection.disconnect();
-            }
-        }
-        return null;
-    }
-}
-</code></pre><p>使用子线程的返回数据方法，加入回调</p>
-<h3 id="1-加入回调接口"><a href="#1-加入回调接口" class="headerlink" title="(1)加入回调接口"></a>(1)加入回调接口</h3><pre><code>public interface HttpCallbackListener {
-    void onFinish(String response);
-    void onError(Exception e);
-}
-</code></pre><h3 id="2-修改调用代码，加入回调方法"><a href="#2-修改调用代码，加入回调方法" class="headerlink" title="(2)修改调用代码，加入回调方法"></a>(2)修改调用代码，加入回调方法</h3><pre><code>import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-public class HttpUtil {
-    public static void sendHttpRequest(final String address,final HttpCallbackListener listener){
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                HttpURLConnection connection=null;
-                try{
-                    URL url=new URL(address);
-                    connection=(HttpURLConnection)url.openConnection();
-                    connection.setRequestMethod(&quot;GET&quot;);
-                    connection.setReadTimeout(8000);
-                    connection.setConnectTimeout(8000);
-                    connection.setDoInput(true);
-                    connection.setDoOutput(true);
-                    InputStream in=connection.getInputStream();
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-                    StringBuilder response=new StringBuilder();
-                    String line=&quot;&quot;;
-                    while ((line=reader.readLine())!=null){
-                        response.append(line);
-                    }
-                    if (listener!=null){
-                        listener.onFinish(response.toString());
-                    }
-                } catch (Exception e) {
-                    if (listener!=null){
-                        listener.onError(e);
-                    }
-                }finally {
-                    if (connection!=null){
-                        connection.disconnect();
-                    }
-                }
-            }
-        }).start();
-    }
-}
-</code></pre><h3 id="3-调用并获得返回数据"><a href="#3-调用并获得返回数据" class="headerlink" title="(3)调用并获得返回数据"></a>(3)调用并获得返回数据</h3><pre><code>public void test(){  
-      String address=&quot;http://www.google.com&quot;;
-        HttpUtil.sendHttpRequest(address, new HttpCallbackListener() {
-            @Override
-            public void onFinish(String response) {
-                //在这里根据返回内容执行具体的逻辑
-            }
-            @Override
-            public void onError(Exception e) {
-                //在这里对异常进行处理
-            }
-        });
-}
-</code></pre>
-      
-    </div>
-    <footer>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2016-09-12T03:56:46.000Z"><a href="/2016/09/12/《第一行代码》奇淫技巧篇/">2016-09-12</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2016/09/12/《第一行代码》奇淫技巧篇/">《第一行代码》奇淫技巧篇</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <h2 id="1、获取全局Context"><a href="#1、获取全局Context" class="headerlink" title="1、获取全局Context"></a>1、获取全局Context</h2><blockquote>
-<p>获取 Context 并非是那么容易的一件事，有时候还是挺伤脑筋的。不过别担心，下面我们就来学习一种技巧，让你在项目的任何地方都能够轻松获取到 Context。</p>
-</blockquote>
-<hr>
-<pre><code>Android 提供了一个 Application 类，每当应用程序启动的时候，系统就会自动将这个类进行初始化。而我们可以定制一个自己的 Application 类，以便于管理程序内一些全局的状态信息，比如说全局 Context。
-定制一个自己 Application 其实并不复杂，首先我们需要创建一个 MyApplication 类继承自 Application，代码如下所示：
-</code></pre><hr>
-<pre><code>import android.app.Application;
-import android.content.Context;
-
-public class MyApplication extends Application {
-    private static Context context;
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        context=getApplicationContext();
-    }
-
-    public static Context getContext(){
-        return context;
-    }
-}
-</code></pre><hr>
-<blockquote>
-<p>接下来我们需要告知系统，当程序启动的时候应该初始化 MyApplication 类，而不是默认的 Application 类。</p>
-</blockquote>
-<p>在 AndroidManifest.xml 文件的<application>标签下进行指定</application></p>
-<pre><code>&lt;manifest xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
-    package=&quot;com.example.networktest&quot;
-    android:versionCode=&quot;1&quot;
-    android:versionName=&quot;1.0&quot; &gt;
-    ……
-    &lt;application
-        android:name=&quot;com.example.networktest.MyApplication&quot;
-    …… &gt;
-    ……
-    &lt;/application&gt;
-&lt;/manifest&gt;
-</code></pre><h2 id="2、自定义日志打印控制工具"><a href="#2、自定义日志打印控制工具" class="headerlink" title="2、自定义日志打印控制工具"></a>2、自定义日志打印控制工具</h2><blockquote>
-<p>如何在应用中控制日志打印，比如说 ，开发阶段打印所有，上线了就不打印日志。需要自定义日志打印工具。</p>
-</blockquote>
-<p>代码如下：</p>
-<pre><code>import android.util.Log;
-
-/**
- * 自定义日志打印工具
- * 通过修改LEVEL控制日志打印
- */
-public class LogUtil {
-    public static final int VERBOSE=1;
-    public static final int DEBUG=2;
-    public static final int INFO=3;
-    public static final int WARN=4;
-    public static final int ERROR=5;
-    public static final int NOTHING=6;
-    public static final int LEVEL=VERBOSE;//通过更改LEVEL控制日志打印
-
-    public static  void v(String tag,String msg){
-        if (LEVEL&lt;=VERBOSE){
-            Log.v(tag,msg);
-        }
-    }
-    public static  void d(String tag,String msg){
-        if (LEVEL&lt;=DEBUG){
-            Log.d(tag,msg);
-        }
-    }
-    public static  void i(String tag,String msg){
-        if (LEVEL&lt;=INFO){
-            Log.i(tag,msg);
-        }
-    }
-    public static  void w(String tag,String msg){
-        if (LEVEL&lt;=WARN){
-            Log.w(tag,msg);
-        }
-    }
-    public static  void e(String tag,String msg){
-        if (LEVEL&lt;=ERROR){
-            Log.e(tag,msg);
-        }
-    }
-}
-</code></pre>
-      
-    </div>
-    <footer>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
         <time datetime="2016-09-12T03:56:46.000Z"><a href="/2016/09/12/将流转化为字符串的工具类/">2016-09-12</a></time>
       
       
@@ -615,7 +611,7 @@ public class LogUtil {
     <aside id="sidebar" class="alignright">
   <div class="search">
   <form action="//google.com/search" method="get" accept-charset="utf-8">
-    <input type="search" name="q" results="0" placeholder="Buscar">
+    <input type="search" name="q" results="0" placeholder="Suche">
     <input type="hidden" name="q" value="site:wanteracc.github.io">
   </form>
 </div>
@@ -624,7 +620,7 @@ public class LogUtil {
 
   
 <div class="widget tag">
-  <h3 class="title">Etiquetas</h3>
+  <h3 class="title">Tags</h3>
   <ul class="entry">
   
     <li><a href="/tags/Android/">Android</a><small>6</small></li>
