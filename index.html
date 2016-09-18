@@ -29,7 +29,7 @@
 			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-	ga('create', '79460108', 'auto');
+	ga('create', 'UA-79460108-1', 'auto');
 	ga('send', 'pageview');
 
 </script>
@@ -184,101 +184,136 @@ public class AppUtil {
     <header>
       
         <div class="icon"></div>
-        <time datetime="2016-09-12T03:56:46.000Z"><a href="/2016/09/12/《第一行代码》奇淫技巧篇/">2016-09-12</a></time>
+        <time datetime="2016-09-12T03:56:46.000Z"><a href="/2016/09/12/粗略模仿微信UI/">2016-09-12</a></time>
       
       
   
-    <h1 class="title"><a href="/2016/09/12/《第一行代码》奇淫技巧篇/">《第一行代码》奇淫技巧篇</a></h1>
+    <h1 class="title"><a href="/2016/09/12/粗略模仿微信UI/">粗略模仿微信UI</a></h1>
   
 
     </header>
     <div class="entry">
       
-        <h2 id="1、获取全局Context"><a href="#1、获取全局Context" class="headerlink" title="1、获取全局Context"></a>1、获取全局Context</h2><blockquote>
-<p>获取 Context 并非是那么容易的一件事，有时候还是挺伤脑筋的。不过别担心，下面我们就来学习一种技巧，让你在项目的任何地方都能够轻松获取到 Context。</p>
-</blockquote>
-<hr>
-<pre><code>Android 提供了一个 Application 类，每当应用程序启动的时候，系统就会自动将这个类进行初始化。而我们可以定制一个自己的 Application 类，以便于管理程序内一些全局的状态信息，比如说全局 Context。
-定制一个自己 Application 其实并不复杂，首先我们需要创建一个 MyApplication 类继承自 Application，代码如下所示：
-</code></pre><hr>
-<pre><code>import android.app.Application;
-import android.content.Context;
+        <h1 id="项目名称：WeChatUI"><a href="#项目名称：WeChatUI" class="headerlink" title="项目名称：WeChatUI"></a>项目名称：WeChatUI</h1><h2 id="项目地址：Github"><a href="#项目地址：Github" class="headerlink" title="项目地址：Github"></a>项目地址：<a href="https://github.com/wanteracc/WeChatUI/" target="_blank" rel="external">Github</a></h2><ul>
+<li><p>粗略模仿微信UI</p>
+<h2 id="切换fragment-在运行的过程中修改显示的fragment"><a href="#切换fragment-在运行的过程中修改显示的fragment" class="headerlink" title="切换fragment,在运行的过程中修改显示的fragment"></a>切换fragment,在运行的过程中修改显示的fragment</h2><p>  public void onClick(View v) {</p>
+<pre><code>FragmentManager manager = getFragmentManager();
+FragmentTransaction transaction=manager.beginTransaction();
+switch (v.getId()) {
+    case R.id.btn_contact:
+        transaction.replace(R.id.ll, new ContactFragment());
+        break;
 
-public class MyApplication extends Application {
-    private static Context context;
+    case R.id.btn_discover:
+        transaction.replace(R.id.ll, new DiscoverFragment());
+        break;
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        context=getApplicationContext();
-    }
+    case R.id.btn_wx:
+        transaction.replace(R.id.ll, new WeXinFragment());
+        break;
 
-    public static Context getContext(){
-        return context;
-    }
+    case R.id.btn_me:
+        transaction.replace(R.id.ll, new MeFragment());
+        break;
 }
-</code></pre><hr>
-<blockquote>
-<p>接下来我们需要告知系统，当程序启动的时候应该初始化 MyApplication 类，而不是默认的 Application 类。</p>
-</blockquote>
-<p>在 AndroidManifest.xml 文件的<application>标签下进行指定</application></p>
-<pre><code>&lt;manifest xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
-    package=&quot;com.example.networktest&quot;
-    android:versionCode=&quot;1&quot;
-    android:versionName=&quot;1.0&quot; &gt;
-    ……
-    &lt;application
-        android:name=&quot;com.example.networktest.MyApplication&quot;
-    …… &gt;
-    ……
-    &lt;/application&gt;
-&lt;/manifest&gt;
-</code></pre><h2 id="2、自定义日志打印控制工具"><a href="#2、自定义日志打印控制工具" class="headerlink" title="2、自定义日志打印控制工具"></a>2、自定义日志打印控制工具</h2><blockquote>
-<p>如何在应用中控制日志打印，比如说 ，开发阶段打印所有，上线了就不打印日志。需要自定义日志打印工具。</p>
-</blockquote>
-<p>代码如下：</p>
-<pre><code>import android.util.Log;
+transaction.commit();
+</code></pre><p>  }</p>
+</li>
+</ul>
+<h2 id="在HomeActivity布局文件中，定义了一个线性布局，R-id-ll，使用fragment动态替换该布局。"><a href="#在HomeActivity布局文件中，定义了一个线性布局，R-id-ll，使用fragment动态替换该布局。" class="headerlink" title="在HomeActivity布局文件中，定义了一个线性布局，R.id.ll，使用fragment动态替换该布局。"></a>在HomeActivity布局文件中，定义了一个线性布局，R.id.ll，使用fragment动态替换该布局。</h2><ul>
+<li><p>以下是HomeActivity的布局文件。</p>
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;RelativeLayout
+      xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+       android:layout_width=&quot;match_parent&quot;
+       android:layout_height=&quot;match_parent&quot;
+       &gt;
+    &lt;LinearLayout
+        android:id=&quot;@+id/ll&quot;
+        android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;match_parent&quot;
+        android:orientation=&quot;vertical&quot;&gt;
+    &lt;/LinearLayout&gt;
 
-/**
- * 自定义日志打印工具
- * 通过修改LEVEL控制日志打印
- */
-public class LogUtil {
-    public static final int VERBOSE=1;
-    public static final int DEBUG=2;
-    public static final int INFO=3;
-    public static final int WARN=4;
-    public static final int ERROR=5;
-    public static final int NOTHING=6;
-    public static final int LEVEL=VERBOSE;//通过更改LEVEL控制日志打印
-
-    public static  void v(String tag,String msg){
-        if (LEVEL&lt;=VERBOSE){
-            Log.v(tag,msg);
-        }
-    }
-    public static  void d(String tag,String msg){
-        if (LEVEL&lt;=DEBUG){
-            Log.d(tag,msg);
-        }
-    }
-    public static  void i(String tag,String msg){
-        if (LEVEL&lt;=INFO){
-            Log.i(tag,msg);
-        }
-    }
-    public static  void w(String tag,String msg){
-        if (LEVEL&lt;=WARN){
-            Log.w(tag,msg);
-        }
-    }
-    public static  void e(String tag,String msg){
-        if (LEVEL&lt;=ERROR){
-            Log.e(tag,msg);
-        }
-    }
+    &lt;LinearLayout
+        android:layout_alignParentBottom=&quot;true&quot;
+        android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;wrap_content&quot;
+        android:orientation=&quot;horizontal&quot;&gt;
+        &lt;Button
+            android:id=&quot;@+id/btn_wx&quot;
+            android:layout_width=&quot;0dp&quot;
+            android:layout_height=&quot;wrap_content&quot;
+            android:layout_weight=&quot;1&quot;
+            android:text=&quot;微信&quot;/&gt;
+        &lt;Button
+            android:id=&quot;@+id/btn_contact&quot;
+            android:layout_width=&quot;0dp&quot;
+            android:layout_height=&quot;wrap_content&quot;
+            android:layout_weight=&quot;1&quot;
+            android:text=&quot;联系人&quot;/&gt;
+        &lt;Button
+            android:id=&quot;@+id/btn_discover&quot;
+            android:layout_width=&quot;0dp&quot;
+            android:layout_height=&quot;wrap_content&quot;
+            android:layout_weight=&quot;1&quot;
+            android:text=&quot;发现&quot;/&gt;
+        &lt;Button
+            android:id=&quot;@+id/btn_me&quot;
+            android:layout_width=&quot;0dp&quot;
+            android:layout_height=&quot;wrap_content&quot;
+            android:layout_weight=&quot;1&quot;
+            android:text=&quot;我&quot;/&gt;
+    &lt;/LinearLayout&gt;
+&lt;/RelativeLayout&gt;
+</code></pre></li>
+</ul>
+<h2 id="在各个fragment中动态加载布局文件"><a href="#在各个fragment中动态加载布局文件" class="headerlink" title="在各个fragment中动态加载布局文件"></a>在各个fragment中动态加载布局文件</h2><ul>
+<li>如下：</li>
+<li>  public class WeXinFragment extends Fragment {<pre><code>@Nullable
+@Override
+public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    View view = inflater.inflate(R.layout.fragment_wexin, null);
+    return view;
 }
-</code></pre>
+</code></pre>  }</li>
+</ul>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2016-09-12T03:56:46.000Z"><a href="/2016/09/12/安装Genymotion后无法找到模拟器的问题/">2016-09-12</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2016/09/12/安装Genymotion后无法找到模拟器的问题/">安装Genymotion后无法找到模拟器的问题</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <h3 id="问题描述：安装了新版的Android-Studio后，用的是Genymotion模拟器，但是运行app的时候经常找不到模拟器。"><a href="#问题描述：安装了新版的Android-Studio后，用的是Genymotion模拟器，但是运行app的时候经常找不到模拟器。" class="headerlink" title="问题描述：安装了新版的Android Studio后，用的是Genymotion模拟器，但是运行app的时候经常找不到模拟器。"></a>问题描述：安装了新版的Android Studio后，用的是Genymotion模拟器，但是运行app的时候经常找不到模拟器。</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">C:\Users\wanter&gt;adb shell</div><div class="line">adb server version (32) doesn&apos;t match this client (36); killing...</div><div class="line">error: could not install *smartsocket* listener: cannot bind to 127.0.0.1:5037:</div><div class="line">通常每个套接字地址(协议/网络地址/端口)只允许使用一次。 (10048)</div><div class="line">could not read ok from ADB Server</div><div class="line">* failed to start daemon *</div><div class="line">error: cannot connect to daemon</div></pre></td></tr></table></figure>
+<p>解决思路：adb端口占用，于是去kill掉，再重启adb，使用adb shell命令还是无解，此方法无效</p>
+<p>解决办法：Genymotion中配置<br>Genymotion-&gt;setting-&gt;adb中配置本地Android SDK的路径</p>
+
       
     </div>
     <footer>
@@ -426,20 +461,101 @@ public class HttpUtil {
     <header>
       
         <div class="icon"></div>
-        <time datetime="2016-09-12T03:56:46.000Z"><a href="/2016/09/12/安装Genymotion后无法找到模拟器的问题/">2016-09-12</a></time>
+        <time datetime="2016-09-12T03:56:46.000Z"><a href="/2016/09/12/《第一行代码》奇淫技巧篇/">2016-09-12</a></time>
       
       
   
-    <h1 class="title"><a href="/2016/09/12/安装Genymotion后无法找到模拟器的问题/">安装Genymotion后无法找到模拟器的问题</a></h1>
+    <h1 class="title"><a href="/2016/09/12/《第一行代码》奇淫技巧篇/">《第一行代码》奇淫技巧篇</a></h1>
   
 
     </header>
     <div class="entry">
       
-        <h3 id="问题描述：安装了新版的Android-Studio后，用的是Genymotion模拟器，但是运行app的时候经常找不到模拟器。"><a href="#问题描述：安装了新版的Android-Studio后，用的是Genymotion模拟器，但是运行app的时候经常找不到模拟器。" class="headerlink" title="问题描述：安装了新版的Android Studio后，用的是Genymotion模拟器，但是运行app的时候经常找不到模拟器。"></a>问题描述：安装了新版的Android Studio后，用的是Genymotion模拟器，但是运行app的时候经常找不到模拟器。</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">C:\Users\wanter&gt;adb shell</div><div class="line">adb server version (32) doesn&apos;t match this client (36); killing...</div><div class="line">error: could not install *smartsocket* listener: cannot bind to 127.0.0.1:5037:</div><div class="line">通常每个套接字地址(协议/网络地址/端口)只允许使用一次。 (10048)</div><div class="line">could not read ok from ADB Server</div><div class="line">* failed to start daemon *</div><div class="line">error: cannot connect to daemon</div></pre></td></tr></table></figure>
-<p>解决思路：adb端口占用，于是去kill掉，再重启adb，使用adb shell命令还是无解，此方法无效</p>
-<p>解决办法：Genymotion中配置<br>Genymotion-&gt;setting-&gt;adb中配置本地Android SDK的路径</p>
+        <h2 id="1、获取全局Context"><a href="#1、获取全局Context" class="headerlink" title="1、获取全局Context"></a>1、获取全局Context</h2><blockquote>
+<p>获取 Context 并非是那么容易的一件事，有时候还是挺伤脑筋的。不过别担心，下面我们就来学习一种技巧，让你在项目的任何地方都能够轻松获取到 Context。</p>
+</blockquote>
+<hr>
+<pre><code>Android 提供了一个 Application 类，每当应用程序启动的时候，系统就会自动将这个类进行初始化。而我们可以定制一个自己的 Application 类，以便于管理程序内一些全局的状态信息，比如说全局 Context。
+定制一个自己 Application 其实并不复杂，首先我们需要创建一个 MyApplication 类继承自 Application，代码如下所示：
+</code></pre><hr>
+<pre><code>import android.app.Application;
+import android.content.Context;
 
+public class MyApplication extends Application {
+    private static Context context;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        context=getApplicationContext();
+    }
+
+    public static Context getContext(){
+        return context;
+    }
+}
+</code></pre><hr>
+<blockquote>
+<p>接下来我们需要告知系统，当程序启动的时候应该初始化 MyApplication 类，而不是默认的 Application 类。</p>
+</blockquote>
+<p>在 AndroidManifest.xml 文件的<application>标签下进行指定</application></p>
+<pre><code>&lt;manifest xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    package=&quot;com.example.networktest&quot;
+    android:versionCode=&quot;1&quot;
+    android:versionName=&quot;1.0&quot; &gt;
+    ……
+    &lt;application
+        android:name=&quot;com.example.networktest.MyApplication&quot;
+    …… &gt;
+    ……
+    &lt;/application&gt;
+&lt;/manifest&gt;
+</code></pre><h2 id="2、自定义日志打印控制工具"><a href="#2、自定义日志打印控制工具" class="headerlink" title="2、自定义日志打印控制工具"></a>2、自定义日志打印控制工具</h2><blockquote>
+<p>如何在应用中控制日志打印，比如说 ，开发阶段打印所有，上线了就不打印日志。需要自定义日志打印工具。</p>
+</blockquote>
+<p>代码如下：</p>
+<pre><code>import android.util.Log;
+
+/**
+ * 自定义日志打印工具
+ * 通过修改LEVEL控制日志打印
+ */
+public class LogUtil {
+    public static final int VERBOSE=1;
+    public static final int DEBUG=2;
+    public static final int INFO=3;
+    public static final int WARN=4;
+    public static final int ERROR=5;
+    public static final int NOTHING=6;
+    public static final int LEVEL=VERBOSE;//通过更改LEVEL控制日志打印
+
+    public static  void v(String tag,String msg){
+        if (LEVEL&lt;=VERBOSE){
+            Log.v(tag,msg);
+        }
+    }
+    public static  void d(String tag,String msg){
+        if (LEVEL&lt;=DEBUG){
+            Log.d(tag,msg);
+        }
+    }
+    public static  void i(String tag,String msg){
+        if (LEVEL&lt;=INFO){
+            Log.i(tag,msg);
+        }
+    }
+    public static  void w(String tag,String msg){
+        if (LEVEL&lt;=WARN){
+            Log.w(tag,msg);
+        }
+    }
+    public static  void e(String tag,String msg){
+        if (LEVEL&lt;=ERROR){
+            Log.e(tag,msg);
+        }
+    }
+}
+</code></pre>
       
     </div>
     <footer>
@@ -490,122 +606,6 @@ public class HttpUtil {
 
 
 
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2016-09-12T03:56:46.000Z"><a href="/2016/09/12/粗略模仿微信UI/">2016-09-12</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2016/09/12/粗略模仿微信UI/">粗略模仿微信UI</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <h1 id="项目名称：WeChatUI"><a href="#项目名称：WeChatUI" class="headerlink" title="项目名称：WeChatUI"></a>项目名称：WeChatUI</h1><h2 id="项目地址：Github"><a href="#项目地址：Github" class="headerlink" title="项目地址：Github"></a>项目地址：<a href="https://github.com/wanteracc/WeChatUI/" target="_blank" rel="external">Github</a></h2><ul>
-<li><p>粗略模仿微信UI</p>
-<h2 id="切换fragment-在运行的过程中修改显示的fragment"><a href="#切换fragment-在运行的过程中修改显示的fragment" class="headerlink" title="切换fragment,在运行的过程中修改显示的fragment"></a>切换fragment,在运行的过程中修改显示的fragment</h2><p>  public void onClick(View v) {</p>
-<pre><code>FragmentManager manager = getFragmentManager();
-FragmentTransaction transaction=manager.beginTransaction();
-switch (v.getId()) {
-    case R.id.btn_contact:
-        transaction.replace(R.id.ll, new ContactFragment());
-        break;
-
-    case R.id.btn_discover:
-        transaction.replace(R.id.ll, new DiscoverFragment());
-        break;
-
-    case R.id.btn_wx:
-        transaction.replace(R.id.ll, new WeXinFragment());
-        break;
-
-    case R.id.btn_me:
-        transaction.replace(R.id.ll, new MeFragment());
-        break;
-}
-transaction.commit();
-</code></pre><p>  }</p>
-</li>
-</ul>
-<h2 id="在HomeActivity布局文件中，定义了一个线性布局，R-id-ll，使用fragment动态替换该布局。"><a href="#在HomeActivity布局文件中，定义了一个线性布局，R-id-ll，使用fragment动态替换该布局。" class="headerlink" title="在HomeActivity布局文件中，定义了一个线性布局，R.id.ll，使用fragment动态替换该布局。"></a>在HomeActivity布局文件中，定义了一个线性布局，R.id.ll，使用fragment动态替换该布局。</h2><ul>
-<li><p>以下是HomeActivity的布局文件。</p>
-<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
-&lt;RelativeLayout
-      xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
-       android:layout_width=&quot;match_parent&quot;
-       android:layout_height=&quot;match_parent&quot;
-       &gt;
-    &lt;LinearLayout
-        android:id=&quot;@+id/ll&quot;
-        android:layout_width=&quot;match_parent&quot;
-        android:layout_height=&quot;match_parent&quot;
-        android:orientation=&quot;vertical&quot;&gt;
-    &lt;/LinearLayout&gt;
-
-    &lt;LinearLayout
-        android:layout_alignParentBottom=&quot;true&quot;
-        android:layout_width=&quot;match_parent&quot;
-        android:layout_height=&quot;wrap_content&quot;
-        android:orientation=&quot;horizontal&quot;&gt;
-        &lt;Button
-            android:id=&quot;@+id/btn_wx&quot;
-            android:layout_width=&quot;0dp&quot;
-            android:layout_height=&quot;wrap_content&quot;
-            android:layout_weight=&quot;1&quot;
-            android:text=&quot;微信&quot;/&gt;
-        &lt;Button
-            android:id=&quot;@+id/btn_contact&quot;
-            android:layout_width=&quot;0dp&quot;
-            android:layout_height=&quot;wrap_content&quot;
-            android:layout_weight=&quot;1&quot;
-            android:text=&quot;联系人&quot;/&gt;
-        &lt;Button
-            android:id=&quot;@+id/btn_discover&quot;
-            android:layout_width=&quot;0dp&quot;
-            android:layout_height=&quot;wrap_content&quot;
-            android:layout_weight=&quot;1&quot;
-            android:text=&quot;发现&quot;/&gt;
-        &lt;Button
-            android:id=&quot;@+id/btn_me&quot;
-            android:layout_width=&quot;0dp&quot;
-            android:layout_height=&quot;wrap_content&quot;
-            android:layout_weight=&quot;1&quot;
-            android:text=&quot;我&quot;/&gt;
-    &lt;/LinearLayout&gt;
-&lt;/RelativeLayout&gt;
-</code></pre></li>
-</ul>
-<h2 id="在各个fragment中动态加载布局文件"><a href="#在各个fragment中动态加载布局文件" class="headerlink" title="在各个fragment中动态加载布局文件"></a>在各个fragment中动态加载布局文件</h2><ul>
-<li>如下：</li>
-<li>  public class WeXinFragment extends Fragment {<pre><code>@Nullable
-@Override
-public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    View view = inflater.inflate(R.layout.fragment_wexin, null);
-    return view;
-}
-</code></pre>  }</li>
-</ul>
-
-      
-    </div>
-    <footer>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-
 
 <nav id="pagination">
   
@@ -615,7 +615,7 @@ public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle sa
     <aside id="sidebar" class="alignright">
   <div class="search">
   <form action="//google.com/search" method="get" accept-charset="utf-8">
-    <input type="search" name="q" results="0" placeholder="Suche">
+    <input type="search" name="q" results="0" placeholder="Buscar">
     <input type="hidden" name="q" value="site:wanteracc.github.io">
   </form>
 </div>
@@ -624,7 +624,7 @@ public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle sa
 
   
 <div class="widget tag">
-  <h3 class="title">Tags</h3>
+  <h3 class="title">Etiquetas</h3>
   <ul class="entry">
   
     <li><a href="/tags/Android/">Android</a><small>6</small></li>
